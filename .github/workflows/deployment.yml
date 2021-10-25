@@ -31,3 +31,4 @@ jobs:
           heroku_email: "ani16september@gmail.com"
           healthcheck: "https://boiling-bayou-74705.herokuapp.com/health"
           checkstring: "ok"
+          rollbackonhealthcheckfailed: true
