@@ -29,3 +29,5 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "boiling-bayou-74705" #Must be unique in Heroku
           heroku_email: "ani16september@gmail.com"
+          healthcheck: "https://boiling-bayou-74705.herokuapp.com/health"
+          checkstring: "ok"
