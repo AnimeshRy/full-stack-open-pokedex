@@ -21,3 +21,11 @@ jobs:
         run: npm run build
       - name: test
         run: npm run test
+      # Deployment
+      - name: Deploy
+        if: ${{ github.event_name == 'push' }}
+        uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "boiling-bayou-74705" #Must be unique in Heroku
+          heroku_email: "ani16september@gmail.com"
