@@ -1,33 +1,20 @@
-name: Deployment pipeline
+name: Deployment Pipeline
 
 on:
   push:
     branches:
       - master
   pull_request:
-    brances: [master]
+    branches: [master]
     types: [opened, synchronize]
 
 jobs:
   simple_deployment_pipeline:
-    runs-on: ubuntu-18.04
+    if: ${{ github.event_name == 'push'}}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '12.x'
-      - name: npm install
-        run: npm install
-      - name: lint
-        run: npm run eslint
-      - name: build
-        run: npm run build
-      - name: test
-        run: npm run test
-      # Deployment
-      - name: Deploy
-        if: ${{ github.event_name == 'push' }}
-        uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+      - uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "boiling-bayou-74705" #Must be unique in Heroku
@@ -35,11 +22,17 @@ jobs:
           healthcheck: "https://boiling-bayou-74705.herokuapp.com/health"
           checkstring: "ok"
           rollbackonhealthcheckfailed: true
-      - name: Push Tags
-        if: ${{ github.event_name == 'push' }}
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      - name: npm install
+        run: npm install
+      - name: lint
+        run: npm run eslint
+      - name: test
+        run: npm test
+      - name: Github Tag Bump
         uses: anothrNick/github-tag-action@1.34.0
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            WITH_V: true
-
-
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
