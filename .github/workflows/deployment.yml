@@ -24,19 +24,22 @@ jobs:
         run: npm run build
       - name: test
         run: npm run test
-      # Deployment and Tag Bump
-      if: ${{ github.event_name == 'push' }}
-        - name: Deploy
-          uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
-          with:
-            heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-            heroku_app_name: "boiling-bayou-74705" #Must be unique in Heroku
-            heroku_email: "ani16september@gmail.com"
-            healthcheck: "https://boiling-bayou-74705.herokuapp.com/health"
-            checkstring: "ok"
-            rollbackonhealthcheckfailed: true
-        - name: Github Tag Bump
-          uses: anothrNick/github-tag-action@1.34.0
+      # Deployment
+      - name: Deploy
+        if: ${{ github.event_name == 'push' }}
+        uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "boiling-bayou-74705" #Must be unique in Heroku
+          heroku_email: "ani16september@gmail.com"
+          healthcheck: "https://boiling-bayou-74705.herokuapp.com/health"
+          checkstring: "ok"
+          rollbackonhealthcheckfailed: true
+      - name: Push Tags
+        if: ${{ github.event_name == 'push' }}
+        uses: anothrNick/github-tag-action@1.34.0
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             WITH_V: true
+
+
